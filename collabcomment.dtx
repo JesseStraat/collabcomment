@@ -229,7 +229,7 @@ colorlinks,
 % \createauthor{test}{blue}
 % \listauthors
 % Bla
-% \todo[test][margin]{Test!!}
+% \todo[test]<margin>{Test!!}
 % \todo[fake]{Test?}
 % \begin{equation}
 %     E = \todo[test]{\gamma}mc^2
@@ -272,7 +272,7 @@ colorlinks,
     margin .bool_set:N = \l_tmpa_bool,
 }
 
-\NewDocumentCommand{\comment}{ O{default} O{} +m }{
+\NewDocumentCommand{\comment}{ O{default} D<>{} +m }{
     % o: Commenter name
     % o: Key-value options
     % m: Comment content
@@ -280,7 +280,7 @@ colorlinks,
     \@@_prop_add_to:Nnn \@@_prop_comment_list {#1} {#3}
 }
 
-\NewDocumentCommand{\todo}{ s O{default} O{} +m }{
+\NewDocumentCommand{\todo}{ s O{default} D<>{} +m }{
     % s: Makes the todo "done"
     % o: Commenter name
     % o: Key-value options

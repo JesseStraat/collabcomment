@@ -229,7 +229,7 @@ colorlinks,
 % \createauthor{test}{blue}
 % \listauthors
 % Bla
-% \todo[test]{Test!!}
+% \todo[test][margin]{Test!!}
 % \todo[fake]{Test?}
 % \begin{equation}
 %     E = \todo[test]{\gamma}mc^2
@@ -268,22 +268,26 @@ colorlinks,
 \prop_new:N \@@_prop_todo_list
 \prop_set_eq:NN \@@_prop_todo_list \c_empty_prop
 
-\NewDocumentCommand{\comment}{ O{default} o +m }{
+\keys_define:nn {position}{
+    margin .bool_set:N = \l_tmpa_bool,
+}
+
+\NewDocumentCommand{\comment}{ O{default} O{} +m }{
     % o: Commenter name
     % o: Key-value options
     % m: Comment content
-    \@@_make_comment:nn{#1}{#3}
+    \@@_parse_keyvals:nn {#2} {\@@_make_comment:nn {#1} {#3}}
     \@@_prop_add_to:Nnn \@@_prop_comment_list {#1} {#3}
 }
 
-\NewDocumentCommand{\todo}{ s O{default} o +m }{
+\NewDocumentCommand{\todo}{ s O{default} O{} +m }{
     % s: Makes the todo "done"
     % o: Commenter name
     % o: Key-value options
     % m: Comment content
     \IfBooleanF{#1}{
         % Todo isn't done yet: display it
-        \@@_make_comment:nn{#2}{\textbf{Todo:}~#4}
+        \@@_parse_keyvals:nn {#3} {\@@_make_comment:nn{#2}{\textbf{Todo:}~#4}}
     }
     \@@_prop_add_to:Nnn \@@_prop_todo_list {#2} {
         \IfBooleanT{#1}{\color{lightgray}}
@@ -356,6 +360,21 @@ colorlinks,
             \end{itemize}
         }
     }
+}
+
+\cs_new:Nn \@@_parse_keyvals:nn {
+    % #1: Keyval list
+    % #2: Input text
+    \group_begin:
+        \keys_set:nn {position} {#1}
+        \bool_if:NTF {\l_tmpa_bool} {
+            % Margin option
+            \marginpar{#2}
+        }{
+            % No option
+            #2
+        }
+    \group_end:
 }
 
 %    \end{macrocode}

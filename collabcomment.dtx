@@ -234,6 +234,9 @@ colorlinks,
 % \begin{equation}
 %     E = \todo[test]{\gamma}mc^2
 % \end{equation}
+% \todo*[test]{This comment is done}
+% \todolist
+% 
 %
 %
 %
@@ -253,19 +256,24 @@ colorlinks,
 %<@@=collabcomment>
 \ProvidesPackage{collabcomment}[2026/06/02 v1.0 Collaborative comments]
 \RequirePackage{xcolor}
-\RequirePackage{xparse,keyval}
+\RequirePackage{xparse}
 \ExplSyntaxOn
 
 \prop_new:N \@@_prop_authorcolours
 \prop_set_from_keyval:Nn \@@_prop_author_colours {
     default = red
 }
+\prop_new:N \@@_prop_comment_list
+\prop_set_eq:NN \@@_prop_comment_list \c_empty_prop
+\prop_new:N \@@_prop_todo_list
+\prop_set_eq:NN \@@_prop_todo_list \c_empty_prop
 
 \NewDocumentCommand{\comment}{ O{default} o +m }{
     % o: Commenter name
     % o: Key-value options
     % m: Comment content
     \@@_make_comment:nn{#1}{#3}
+    \@@_prop_add_to:Nnn \@@_prop_comment_list {#1} {#3}
 }
 
 \NewDocumentCommand{\todo}{ s O{default} o +m }{
@@ -276,6 +284,10 @@ colorlinks,
     \IfBooleanF{#1}{
         % Todo isn't done yet: display it
         \@@_make_comment:nn{#2}{\textbf{Todo:}~#4}
+    }
+    \@@_prop_add_to:Nnn \@@_prop_todo_list {#2} {
+        \IfBooleanT{#1}{\color{lightgray}}
+        #4
     }
 }
 
@@ -298,6 +310,14 @@ colorlinks,
     \end{itemize}
 }
 
+\NewDocumentCommand{\commentlist}{}{
+    \@@_display_list:N \@@_prop_comment_list
+}
+
+\NewDocumentCommand{\todolist}{}{
+    \@@_display_list:N \@@_prop_todo_list
+}
+
 \cs_new:Nn \@@_make_comment:nn {
     % #1: Commenter name
     % #2: Content
@@ -314,6 +334,30 @@ colorlinks,
         \prop_item:Nn \@@_prop_author_colours {default}
     }
 }
+
+\cs_new:Nn \@@_prop_add_to:Nnn {
+    % #1: Comment/todo list name
+    % #2: Author
+    % #3: Content
+    \tl_set:Ne \l_tmpa_tl {\prop_item:Nn #1 {#2}}
+    \tl_put_right:Nn \l_tmpa_tl {\item #3}
+    \prop_put:NnV #1 {#2} \l_tmpa_tl
+}
+
+\cs_new:Nn \@@_display_list:N {
+    % #1: comment/todo list name
+    \prop_map_inline:Nn #1 {
+        \tl_set:Nn \l_tmpa_tl {##2}
+        \tl_if_empty:NF \l_tmpa_tl {
+            \par
+            {\Large \color{\@@_get_author_colour:n {##1}}##1:}
+            \begin{itemize}
+               ##2
+            \end{itemize}
+        }
+    }
+}
+
 %    \end{macrocode}
 %    \begin{macrocode}
 \ExplSyntaxOff

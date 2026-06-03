@@ -256,7 +256,7 @@ colorlinks,
 %<@@=collabcomment>
 \ProvidesPackage{collabcomment}[2026/06/02 v1.0 Collaborative comments]
 \RequirePackage{xcolor}
-\RequirePackage{xparse}
+\RequirePackage{xparse,l3keys2e}
 \ExplSyntaxOn
 
 \prop_new:N \@@_prop_authorcolours
@@ -268,7 +268,14 @@ colorlinks,
 \prop_new:N \@@_prop_todo_list
 \prop_set_eq:NN \@@_prop_todo_list \c_empty_prop
 
-\keys_define:nn {position}{
+\bool_new:N \@@_bool_final
+
+\keys_define:nn {collabcomment} {
+    final .bool_set:N = \@@_bool_final
+}
+\ProcessKeysOptions {collabcomment}
+
+\keys_define:nn {commentposition} {
     margin .bool_set:N = \l_tmpa_bool,
 }
 
@@ -322,6 +329,10 @@ colorlinks,
     \@@_display_list:N \@@_prop_todo_list
 }
 
+\cs_new:Nn \@@_check_if_final:n {
+    \bool_if:NF \@@_bool_final {#1}
+}
+
 \cs_new:Nn \@@_make_comment:nn {
     % #1: Commenter name
     % #2: Content
@@ -350,14 +361,16 @@ colorlinks,
 
 \cs_new:Nn \@@_display_list:N {
     % #1: comment/todo list name
-    \prop_map_inline:Nn #1 {
-        \tl_set:Nn \l_tmpa_tl {##2}
-        \tl_if_empty:NF \l_tmpa_tl {
-            \par
-            {\Large \color{\@@_get_author_colour:n {##1}}##1:}
-            \begin{itemize}
-               ##2
-            \end{itemize}
+    \@@_check_if_final:n {
+        \prop_map_inline:Nn #1 {
+            \tl_set:Nn \l_tmpa_tl {##2}
+            \tl_if_empty:NF \l_tmpa_tl {
+                \par
+                {\Large \color{\@@_get_author_colour:n {##1}}##1:}
+                \begin{itemize}
+                ##2
+                \end{itemize}
+            }
         }
     }
 }
@@ -365,16 +378,18 @@ colorlinks,
 \cs_new:Nn \@@_parse_keyvals:nn {
     % #1: Keyval list
     % #2: Input text
-    \group_begin:
-        \keys_set:nn {position} {#1}
-        \bool_if:NTF {\l_tmpa_bool} {
-            % Margin option
-            \marginpar{#2}
-        }{
-            % No option
-            #2
-        }
-    \group_end:
+    \@@_check_if_final:n {
+        \group_begin:
+            \keys_set:nn {commentposition} {#1}
+            \bool_if:NTF {\l_tmpa_bool} {
+                % Margin option
+                \marginpar{#2}
+            }{
+                % No option
+                #2
+            }
+        \group_end:
+    }
 }
 
 %    \end{macrocode}

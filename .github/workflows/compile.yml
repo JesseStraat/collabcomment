@@ -14,6 +14,7 @@ jobs:
             makeindex -s gind.ist -o collabcomment.ind collabcomment.idx
             makeindex -s gglo.ist -o collabcomment.gls collabcomment.glo
             pdflatex collabcomment.dtx
+            pdflatex collabcomment.dtx
       - name: Move CTAN files into folder
         run: |
           mkdir -p ctan/collabcomment

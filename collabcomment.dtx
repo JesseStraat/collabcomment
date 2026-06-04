@@ -314,6 +314,7 @@ colorlinks,
 }
 
 \NewDocumentCommand{\listauthors}{}{
+    \@@_parse_keyvals:nn {} {
     List~of~authors:
     \begin{itemize}
         \prop_map_inline:Nn \@@_prop_author_colours {
@@ -324,6 +325,7 @@ colorlinks,
             \endgroup
         }
     \end{itemize}
+    }
 }
 
 \NewDocumentCommand{\commentlist}{}{

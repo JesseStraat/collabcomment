@@ -294,7 +294,7 @@ colorlinks,
     % m: Comment content
     \IfBooleanF{#1}{
         % Todo isn't done yet: display it
-        \@@_parse_keyvals:nn {#3} {\@@_make_comment:nn{#2}{\textbf{Todo:}~#4}}
+        \@@_parse_keyvals:nn {#3} {\@@_make_comment:nn{#2}{\textbf{Todo:~}#4}}
     }
     \@@_prop_add_to:Nnn \@@_prop_todo_list {#2} {
         \IfBooleanT{#1}{\color{lightgray}}
@@ -337,7 +337,8 @@ colorlinks,
     % #1: Commenter name
     % #2: Content
     \begingroup
-    \color{\@@_get_author_colour:n{#1}}#2
+    \color{\@@_get_author_colour:n{#1}}
+    \textbf{\thecollabcomment.~}#2
     \endgroup
 }
 
@@ -355,8 +356,11 @@ colorlinks,
     % #2: Author
     % #3: Content
     \tl_set:Ne \l_tmpa_tl {\prop_item:Nn #1 {#2}}
-    \tl_put_right:Nn \l_tmpa_tl {\item #3}
-    \prop_put:NnV #1 {#2} \l_tmpa_tl
+    \tl_put_right:Nn \l_tmpa_tl {\item}
+    \ifmmode \tl_put_right:Nn \l_tmpa_tl {\(}\fi
+    \tl_put_right:Nn \l_tmpa_tl {#3}
+    \ifmmode \tl_put_right:Nn \l_tmpa_tl {\)}\fi
+    \prop_gput:NnV #1 {#2} \l_tmpa_tl
 }
 
 \cs_new:Nn \@@_display_list:N {

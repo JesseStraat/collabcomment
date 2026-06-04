@@ -23,4 +23,4 @@
 *.snm
 
 ## Images
-!ukgovtest.pdf
+!.github/README.md

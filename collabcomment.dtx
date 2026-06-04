@@ -29,6 +29,7 @@
 %       makeindex -s gind.ist -o collabcomment.ind collabcomment.idx
 %       makeindex -s gglo.ist -o collabcomment.gls collabcomment.glo
 %       pdflatex collabcomment.dtx
+%       pdflatex collabcomment.dtx
 %
 %<*ignore>
 \iffalse
@@ -37,13 +38,22 @@
 %<*readme>
 # `collabcomment`
 
-PLACEHOLDER README
+The `collabcomment` package makes leaving comments for your
+collaborators a better experience. It supports the following
+features:
+- Leave coloured comments and to-dos in your LaTeX document.
+- Create custom authors with their own colour.
+- Comments and to-dos are numbered and fully compatible with `hyperref`.
+- Collect all to-dos/comments into a hyperlinked list grouped by author.
+- Use the `final` package option to get rid of all comments and lists.
+- Mark to-dos as complete to remove them from the text, but still
+appear in the to-do list.
 
 # Installation
 Run the following in the command line:
-1\. If collabcomment.ins is present:
+1. If collabcomment.ins is present:
     `pdflatex collabcomment.ins`
-2\. If collabcomment.ins is absent:
+2. If collabcomment.ins is absent:
     `pdflatex collabcomment.dtx`
 
 Move `.sty` and `.cls` files to a folder that TeX can find.
@@ -54,6 +64,7 @@ Run the following in the command line:
 pdflatex collabcomment.dtx
 makeindex -s gind.ist -o collabcomment.ind collabcomment.idx
 makeindex -s gglo.ist -o collabcomment.gls collabcomment.glo
+pdflatex collabcomment.dtx
 pdflatex collabcomment.dtx
 ```
 This automatically unpacks the package, as well.
@@ -90,7 +101,7 @@ License: [LPPL1.3c](https://www.latex-project.org/lppl.txt)
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: collabcomment 2026/06/02 v1.0}
+\Msg{* Package: collabcomment 2026/06/04 v1.0}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -119,7 +130,7 @@ and the derived files
 If you are looking for comments or documentation, you won't find
 any in the source. These packages make use of literate programming, which means
 that the documentation is given in the form of a pdf file. You can
-probably find PLACEHOLDER.pdf in this folder, by running "texdoc --view collabcomment"
+probably find collabcomment.pdf in this folder, by running "texdoc --view collabcomment"
 in the command line, or Googling
 "[your distribution] how to find package documentation".
 If you're using MiKTeX, open MiKTeX console, go to
@@ -171,13 +182,9 @@ If you're using MiKTeX, open MiKTeX console, go to
 
 %<*driver>
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
-\documentclass{ltxdoc}
+\documentclass{l3doc}
 \usepackage{\jobname}
 \usepackage[english]{babel}
-\usepackage[final,
-hyperindex=false,
-colorlinks,
-]{hyperref}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -189,7 +196,13 @@ colorlinks,
 %
 % \GetFileInfo{\jobname.sty}
 %
-% \DoNotIndex{\begin,\end}
+% \DoNotIndex{\begin,\end,\(,\),\arabic,\begingroup,\endgroup,\bool_if:NF,\bool_if:NTF,\bool_new:N,\l_tmpa_bool}
+% \DoNotIndex{\color,\cs_new:Nn,\ifcsname,\endcsname,\endgroup,\ExplSyntaxOn,\ExplSyntaxOff,\fi}
+% \DoNotIndex{\group_begin:,\group_end:,\hyperref,\IfBooleanF,\IfBooleanT,\ifmmode,\item}
+% \DoNotIndex{\label,\Large,\marginpar,\newcounter,\NewDocumentCommand,\par,\ProcessKeyOptions}
+% \DoNotIndex{\prop_gput:Nnn,\prop_gput:NnV,\prop_item:Nn,\prop_map_inline:Nn,\prop_new:N,\prop_set_from_keyval:Nn,\prop_if_in:NnTF}
+% \DoNotIndex{\providecommand,\ProvidesPackage,\refstepcounter,\RequirePackage,\textbf}
+% \DoNotIndex{\tl_if_empty:NF,\tl_put_right:Nn,\tl_put_right:Ne,\tl_set:Nn,\tl_set:Ne,\l_tmpa_tl,\keys_set:nn}
 %
 % \title{^^A
 %     collabcomment\thanks{^^A
@@ -204,12 +217,15 @@ colorlinks,
 % \maketitle
 %
 % \begin{abstract}
-%     \noindent Abstract
+%     \noindent The \pkg{collabcomment} package makes leaving comments for
+%    your collaborators a better experience. It features custom authors with
+%    their own colours, full \pkg{hyperref} compatibility and hyperlinked
+%    lists of all comments and to-dos.
 % \end{abstract}
 %
 % \tableofcontents
 %
-% \changes{v1.0}{2026/06/02}{First release}
+% \changes{v1.0}{2026/06/04}{First release}
 %
 %
 %
@@ -223,19 +239,90 @@ colorlinks,
 %
 %
 % \section{Documentation}
-% Bla
+% This is the documentation of \pkg{collabcomment}, a package which
+% improves leaving comments for collaborators. The basic functionalities
+% are the following.
+% \begin{itemize}
+%   \item Leave coloured comments and to-dos in your \LaTeX{} document.
+%   \item Create custom authors with their own colour.
+%   \item Comments and to-dos are numbered and fully compatible with \pkg{hyperref}.
+%   \item Collect all to-dos/comments into a hyperlinked list grouped by author.
+%   \item Use the |final| package option to get rid of all comments and lists.
+%   \item Mark to-dos as complete to remove them from the text, but still
+%   appear in the to-do list.
+% \end{itemize}
+% 
 %^^A
 % \subsection{Usage}
-% \createauthor{test}{blue}
-% \listauthors
-% Bla
-% \todo[test]<margin>{Test!!}
-% \todo[fake]{Test?}
-% \begin{equation}
-%     E = \todo[test]{\gamma}mc^2
-% \end{equation}
-% \todo*[test]{This comment is done}
-% \todolist
+% The basic functionality of this package is in writing notes and to-dos (together called comments).\par
+% \DescribeOption{final}
+% When the |final| option is set, comments, comment lists and author lists are
+% not displayed in the PDF file. Use this for ``final versions'', which shouldn't
+% have any of these.
+% \begin{function}{\note}
+%   \begin{syntax}
+%       \tn{note}\oarg{author}\textlangle\meta{keyvals}\textrangle\Arg{text}
+%   \end{syntax}
+%   Creates a note at the current position. The \meta{author} parameter should reflect the name of whoever
+%   is writing the comment. For example, |\note[John Smith]{Foo}| gives \note[John Smith]{Foo}.
+%   The only keyval currently supported is |margin|, which puts the comment in the margin.
+%   For example, |\note[Joe Shmoe]<margin>{Bar}|
+%   creates the comment currently in the margins. If no author is given, the system uses
+%   |default| as the author.\par
+%   Comments are compatible with math mode; for example,
+%   \begin{equation}
+%       E = \note[John Smith]{\gamma}mc^2.
+%   \end{equation}
+% \end{function}
+% \note[Joe Shmoe]<margin>{Bar}
+% \begin{function}{\todo,\todo*}
+%   \begin{syntax}
+%       \tn{todo}\oarg{author}\textlangle\meta{keyvals}\textrangle\Arg{text}
+%       \tn{todo*}\oarg{author}\textlangle\meta{keyvals}\textrangle\Arg{text}
+%   \end{syntax}
+%   Creates a to-do at the current position. Behaves in the exact same way as \tn{note}, except
+%   ``Todo:'' is added in front of the note, and \tn{todo*} marks the to-do as completed, which
+%   will prevent the to-do from being displayed in the text, while keeping it in the to-do list.
+%   For example, |\todo[John Smith]{Baz}| gives \todo[John Smith]{Baz}\label{comment:bar}.
+%   \todo*[John Smith]{This to-do has been completed.}
+% \end{function}
+% Each comment starts with a counter, the |collabcomment| counter. They are
+% also compatible with \pkg{hyperref}, so one can reference them as \autoref{comment:bar}.
+% To make comment lists work, each comment is labeled by default as
+% |collabcomment:[counter]|. It is not advised to
+% use these labels as an end user, since they may change if other comments
+% are added. Instead, define your own labels using another naming
+% scheme.
+% \begin{function}{\createauthor}
+%   \begin{syntax}
+%       \tn{createauthor}\Arg{name}{colour}
+%   \end{syntax}
+%   Gives all comments by author \meta{name} a custom colours, \meta{colour}. For example,
+%   if we use |\createauthor{Jane Doe}{violet}|\createauthor{Jane Doe}{violet},
+%   then |\note{Jane Doe}{Foobar}| gives \note[Jane Doe]{Foobar}. Any \pkg{xcolor}
+%   colour can be used for this.
+% \end{function}
+% \begin{function}{\listauthors}
+%   \begin{syntax}
+%       \tn{listauthors}
+%   \end{syntax}
+%   Displays all defined authors and their colours, for example:\par
+%   \listauthors
+% \end{function}
+% \begin{function}{\notelist}
+%   \begin{syntax}
+%       \tn{notelist}
+%   \end{syntax}
+%   Creates a hyperlinked list of all notes, grouped by author.\notelist
+% \end{function}
+% \begin{function}{\todolist}
+%   \begin{syntax}
+%       \tn{todolist}
+%   \end{syntax}
+%   Creates a hyperlinked list of all to-dos, grouped by author. All completed to-dos
+%   are greyed out, and the hyperlink points to the place where the to-do would have been.
+%   \todolist
+% \end{function}
 % 
 %
 %
@@ -254,65 +341,82 @@ colorlinks,
 %    \begin{macrocode}
 %<*main>
 %<@@=collabcomment>
-\ProvidesPackage{collabcomment}[2026/06/02 v1.0 Collaborative comments]
+\ProvidesPackage{collabcomment}[2026/06/04 v1.0 Collaborative comments]
 \RequirePackage{xcolor}
 \RequirePackage{xparse,l3keys2e}
 \ExplSyntaxOn
-
+%    \end{macrocode}
+% \begin{variable}{\@@_prop_authorcolours,\@@_prop_comment_list,\@@_prop_todo_list,\@@_bool_final}
+% Some variables to save relevant data to.
+%    \begin{macrocode}
 \prop_new:N \@@_prop_authorcolours
 \prop_set_from_keyval:Nn \@@_prop_author_colours {
     default = red
 }
 \prop_new:N \@@_prop_comment_list
-\prop_set_eq:NN \@@_prop_comment_list \c_empty_prop
 \prop_new:N \@@_prop_todo_list
-\prop_set_eq:NN \@@_prop_todo_list \c_empty_prop
-
 \bool_new:N \@@_bool_final
-
+\newcounter{collabcomment}
+\providecommand{\theHcollabcomment}{\arabic{collabcomment}}
+\providecommand*{\collabcommentautorefname}{Comment}
+%    \end{macrocode}
+% \end{variable}
+% The following are the package settings.
+%    \begin{macrocode}
 \keys_define:nn {collabcomment} {
     final .bool_set:N = \@@_bool_final
 }
 \ProcessKeysOptions {collabcomment}
-
+%    \end{macrocode}
+% We also set up the keyval settings for comments and to-dos.
+%    \begin{macrocode}
 \keys_define:nn {commentposition} {
     margin .bool_set:N = \l_tmpa_bool,
 }
-
-\newcounter{collabcomment}
-\providecommand*{\collabcommentautorefname}{Comment}
-
-\NewDocumentCommand{\comment}{ O{default} D<>{} +m }{
-    % o: Commenter name
-    % o: Key-value options
-    % m: Comment content
+%    \end{macrocode}
+% \begin{macro}{\note}
+% Creates a note.
+%    \begin{macrocode}
+\NewDocumentCommand{\note}{ O{default} D<>{} +m }{
     \@@_parse_reference:
-    \@@_parse_keyvals:nn {#2} {\@@_make_comment:nn {#1} {#3}}
-    \@@_prop_add_to:Nnn \@@_prop_comment_list {#1} {#3}
+    \@@_parse_keyvals:nn {#2} {
+        \@@_make_comment:nn {#1} {#3}
+    }
+    \@@_prop_add_to:Nnn
+        \@@_prop_comment_list {#1} {#3}
 }
-
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\todo}
+% Creates a to-do.
+%    \begin{macrocode}
 \NewDocumentCommand{\todo}{ s O{default} D<>{} +m }{
-    % s: Makes the todo "done"
-    % o: Commenter name
-    % o: Key-value options
-    % m: Comment content
     \@@_parse_reference:
     \IfBooleanF{#1}{
-        % Todo isn't done yet: display it
-        \@@_parse_keyvals:nn {#3} {\@@_make_comment:nn{#2}{\textbf{Todo:~}#4}}
+%    \end{macrocode}
+% Todo isn't done yet: display it as normal.
+%    \begin{macrocode}
+        \@@_parse_keyvals:nn {#3} {
+            \@@_make_comment:nn {#2} {
+                \textbf{Todo:~}#4
+            }
+        }
     }
     \@@_prop_add_to:Nnn \@@_prop_todo_list {#2} {
         \IfBooleanT{#1}{\color{lightgray}}
         #4
     }
 }
-
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\createauthor}
+% Create a new author with corresponding colour.
+%    \begin{macrocode}
 \NewDocumentCommand{\createauthor}{ m m }{
-    % m: Author name
-    % m: Author colour
     \prop_gput:Nnn \@@_prop_author_colours {#1} {#2}
 }
-
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\listauthors}
+% Displays a list of all authors.
+%    \begin{macrocode}
 \NewDocumentCommand{\listauthors}{}{
     \@@_parse_keyvals:nn {} {
     List~of~authors:
@@ -327,59 +431,87 @@ colorlinks,
     \end{itemize}
     }
 }
-
-\NewDocumentCommand{\commentlist}{}{
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\notelist}
+% Displays a list of all notes, grouped by author.
+%    \begin{macrocode}
+\NewDocumentCommand{\notelist}{}{
     \@@_display_list:N \@@_prop_comment_list
 }
-
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\todolist}
+% Displays a list of all to-dos, grouped by author.
+%    \begin{macrocode}
 \NewDocumentCommand{\todolist}{}{
     \@@_display_list:N \@@_prop_todo_list
 }
-
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\@@_check_if_final:n}
+% Checks if the document is in draft (default) or final mode. If in draft mode,
+% it returns its input, while in final mode, it returns nothing.
+%    \begin{macrocode}
 \cs_new:Nn \@@_check_if_final:n {
     \bool_if:NF \@@_bool_final {#1}
 }
-
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\@@_make_comment:nn}
+% Creates a comment in the right colour, with a counter.
+%    \begin{macrocode}
 \cs_new:Nn \@@_make_comment:nn {
-    % #1: Commenter name
-    % #2: Content
     \begingroup
     \color{\@@_get_author_colour:n{#1}}
     \textbf{\thecollabcomment.~}#2
     \endgroup
 }
-
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\@@_get_author_colour:n}
+% Gets the colour saved to some author.
+%    \begin{macrocode}
 \cs_new:Nn \@@_get_author_colour:n {
-    % #1: Author name
     \prop_if_in:NnTF \@@_prop_author_colours {#1} {
         \prop_item:Nn \@@_prop_author_colours {#1}
     }{
         \prop_item:Nn \@@_prop_author_colours {default}
     }
 }
-
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\@@_prop_add_to:Nnn}
+% Adds a comment to one of the comment lists, grouped by author.
+%    \begin{macrocode}
 \cs_new:Nn \@@_prop_add_to:Nnn {
-    % #1: Comment/todo list name
-    % #2: Author
-    % #3: Content
     \tl_set:Ne \l_tmpa_tl {\prop_item:Nn #1 {#2}}
     \tl_put_right:Nn \l_tmpa_tl {\item}
     \tl_put_right:Ne \l_tmpa_tl {[\thecollabcomment.]}
+%    \end{macrocode}
+% If we're in math mode, we should add |\(...\)| around the comment.
+%    \begin{macrocode}
     \ifmmode \tl_put_right:Nn \l_tmpa_tl {\(}\fi
-    \@@_href_put_right:Nn \l_tmpa_tl {collabcomment:\thecollabcomment}
+%    \end{macrocode}
+% If |\hyperref| is defined, we wrap the entire comment into a |\hyperref| towards
+% the comment.
+%    \begin{macrocode}
+    \@@_href_put_right:Nn \l_tmpa_tl {
+        collabcomment:\thecollabcomment
+    }
     \tl_put_right:Nn \l_tmpa_tl { {#3} }
     \ifmmode \tl_put_right:Nn \l_tmpa_tl {\)}\fi
     \prop_gput:NnV #1 {#2} \l_tmpa_tl
 }
-
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\@@_display_list:N}
+% Displays a comment list, grouped by author.
+%    \begin{macrocode}
 \cs_new:Nn \@@_display_list:N {
-    % #1: comment/todo list name
     \@@_check_if_final:n {
         \prop_map_inline:Nn #1 {
             \tl_set:Nn \l_tmpa_tl {##2}
             \tl_if_empty:NF \l_tmpa_tl {
                 \par
-                {\Large \color{\@@_get_author_colour:n {##1}}##1:}
+                {
+                    \Large
+                    \color{\@@_get_author_colour:n {##1}}
+                    ##1:
+                }
                 \begin{itemize}
                 ##2
                 \end{itemize}
@@ -387,10 +519,12 @@ colorlinks,
         }
     }
 }
-
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\@@_parse_keyvals:nn}
+% Parses the keyvals and package options. In particular, it doesn't display
+% anything if final mode is active, and puts comments in the margins if needed.
+%    \begin{macrocode}
 \cs_new:Nn \@@_parse_keyvals:nn {
-    % #1: Keyval list
-    % #2: Input text
     \@@_check_if_final:n {
         \group_begin:
             \keys_set:nn {commentposition} {#1}
@@ -404,22 +538,27 @@ colorlinks,
         \group_end:
     }
 }
-
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\@@_parse_reference:}
+% Creates a reference, increases the counter, and labels the reference for internal use.
+%    \begin{macrocode}
 \cs_new:Nn \@@_parse_reference: {
     \refstepcounter{collabcomment}
     \label{collabcomment:\thecollabcomment}
 }
-
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\@@_href_put_right:Nn}
+% A variant on |tl_put_right:Nn|, where, if |\hyperref| is defined, a reference to some
+% reference key is added.
+%    \begin{macrocode}
 \cs_new:Nn \@@_href_put_right:Nn {
-    % #1: Token list
-    % #2: Reference key
     \ifcsname hyperref\endcsname
         \tl_put_right:Nn #1 {\hyperref}
         \tl_put_right:Ne #1 {[#2]}
     \fi
 }
-
 %    \end{macrocode}
+% \end{macro}
 %    \begin{macrocode}
 \ExplSyntaxOff
 %</main>

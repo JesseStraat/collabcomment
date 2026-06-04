@@ -279,10 +279,14 @@ colorlinks,
     margin .bool_set:N = \l_tmpa_bool,
 }
 
+\newcounter{collabcomment}
+\providecommand*{\collabcommentautorefname}{Comment}
+
 \NewDocumentCommand{\comment}{ O{default} D<>{} +m }{
     % o: Commenter name
     % o: Key-value options
     % m: Comment content
+    \@@_parse_reference:
     \@@_parse_keyvals:nn {#2} {\@@_make_comment:nn {#1} {#3}}
     \@@_prop_add_to:Nnn \@@_prop_comment_list {#1} {#3}
 }
@@ -292,6 +296,7 @@ colorlinks,
     % o: Commenter name
     % o: Key-value options
     % m: Comment content
+    \@@_parse_reference:
     \IfBooleanF{#1}{
         % Todo isn't done yet: display it
         \@@_parse_keyvals:nn {#3} {\@@_make_comment:nn{#2}{\textbf{Todo:~}#4}}
@@ -357,8 +362,10 @@ colorlinks,
     % #3: Content
     \tl_set:Ne \l_tmpa_tl {\prop_item:Nn #1 {#2}}
     \tl_put_right:Nn \l_tmpa_tl {\item}
+    \tl_put_right:Ne \l_tmpa_tl {[\thecollabcomment.]}
     \ifmmode \tl_put_right:Nn \l_tmpa_tl {\(}\fi
-    \tl_put_right:Nn \l_tmpa_tl {#3}
+    \@@_href_put_right:Nn \l_tmpa_tl {collabcomment:\thecollabcomment}
+    \tl_put_right:Nn \l_tmpa_tl { {#3} }
     \ifmmode \tl_put_right:Nn \l_tmpa_tl {\)}\fi
     \prop_gput:NnV #1 {#2} \l_tmpa_tl
 }
@@ -394,6 +401,20 @@ colorlinks,
             }
         \group_end:
     }
+}
+
+\cs_new:Nn \@@_parse_reference: {
+    \refstepcounter{collabcomment}
+    \label{collabcomment:\thecollabcomment}
+}
+
+\cs_new:Nn \@@_href_put_right:Nn {
+    % #1: Token list
+    % #2: Reference key
+    \ifcsname hyperref\endcsname
+        \tl_put_right:Nn #1 {\hyperref}
+        \tl_put_right:Ne #1 {[#2]}
+    \fi
 }
 
 %    \end{macrocode}

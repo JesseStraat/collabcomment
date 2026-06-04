@@ -310,7 +310,7 @@ colorlinks,
 \NewDocumentCommand{\createauthor}{ m m }{
     % m: Author name
     % m: Author colour
-    \prop_put:Nnn \@@_prop_author_colours {#1} {#2}
+    \prop_gput:Nnn \@@_prop_author_colours {#1} {#2}
 }
 
 \NewDocumentCommand{\listauthors}{}{

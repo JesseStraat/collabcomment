@@ -39,7 +39,9 @@
 # `collabcomment`
 
 The `collabcomment` package makes leaving comments for your
-collaborators a better experience. It supports the following
+collaborators a better experience. While many such packages already
+exist, `collabcomment` is unique due to its simplicity and implementation in
+LaTeX3, without losing the power of comparable packages. It supports the following
 features:
 - Leave coloured comments and to-dos in your LaTeX document.
 - Create custom authors with their own colour.
@@ -218,7 +220,9 @@ If you're using MiKTeX, open MiKTeX console, go to
 %
 % \begin{abstract}
 %     \noindent The \pkg{collabcomment} package makes leaving comments for
-%    your collaborators a better experience. It features custom authors with
+%    your collaborators a better experience. While many such packages already
+%    exist, `collabcomment` is unique due to its simplicity and implementation in
+%    \LaTeX{}3, without losing the power of comparable packages. It features custom authors with
 %    their own colours, full \pkg{hyperref} compatibility and hyperlinked
 %    lists of all comments and to-dos.
 % \end{abstract}
@@ -393,7 +397,7 @@ If you're using MiKTeX, open MiKTeX console, go to
     \@@_parse_reference:
     \IfBooleanF{#1}{
 %    \end{macrocode}
-% Todo isn't done yet: display it as normal.
+% To-do isn't done yet: display it as normal.
 %    \begin{macrocode}
         \@@_parse_keyvals:nn {#3} {
             \@@_make_comment:nn {#2} {

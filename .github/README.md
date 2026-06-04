@@ -1,7 +1,9 @@
 # `collabcomment`
 
 The `collabcomment` package makes leaving comments for your
-collaborators a better experience. It supports the following
+collaborators a better experience. While many such packages already
+exist, `collabcomment` is unique due to its simplicity and implementation in
+LaTeX3, without losing the power of comparable packages. It supports the following
 features:
 - Leave coloured comments and to-dos in your LaTeX document.
 - Create custom authors with their own colour.

@@ -269,7 +269,8 @@ If you're using MiKTeX, open MiKTeX console, go to
 %   \end{syntax}
 %   Creates a note at the current position. The \meta{author} parameter should reflect the name of whoever
 %   is writing the comment. For example, |\note[John Smith]{Foo}| gives \note[John Smith]{Foo}.
-%   The only keyval currently supported is |margin|, which puts the comment in the margin.
+%   The only keyvals currently supported are |margin|, which puts the comment in the margin,
+%   and |footnote|, which puts the comment in a footnote.
 %   For example, |\note[Joe Shmoe]<margin>{Bar}|
 %   creates the comment currently in the margins. If no author is given, the system uses
 %   |default| as the author.\par
@@ -376,6 +377,7 @@ If you're using MiKTeX, open MiKTeX console, go to
 %    \begin{macrocode}
 \keys_define:nn {commentposition} {
     margin .bool_set:N = \l_tmpa_bool,
+    footnote .bool_set:N = \l_tmpb_bool,
 }
 %    \end{macrocode}
 % \begin{macro}{\note}
@@ -526,7 +528,8 @@ If you're using MiKTeX, open MiKTeX console, go to
 %    \end{macrocode}
 % \end{macro}\begin{macro}{\@@_parse_keyvals:nn}
 % Parses the keyvals and package options. In particular, it doesn't display
-% anything if final mode is active, and puts comments in the margins if needed.
+% anything if final mode is active, and puts comments in the margins or footnotes
+% if needed.
 %    \begin{macrocode}
 \cs_new:Nn \@@_parse_keyvals:nn {
     \@@_check_if_final:n {
@@ -536,9 +539,13 @@ If you're using MiKTeX, open MiKTeX console, go to
                 % Margin option
                 \marginpar{#2}
             }{
+            \bool_if:NTF {\l_tmpb_bool} {
+                % Footnote
+                \footnote{#2}
+            }{
                 % No option
                 #2
-            }
+            }}
         \group_end:
     }
 }

@@ -314,20 +314,26 @@ If you're using MiKTeX, open MiKTeX console, go to
 %   Displays all defined authors and their colours, for example:\par
 %   \listauthors
 % \end{function}
-% \begin{function}{\notelist}
+% \begin{function}{\notelist,\notelist*}
 %   \begin{syntax}
 %       \tn{notelist}
+%       \tn{notelist*}
 %   \end{syntax}
-%   Creates a hyperlinked list of all notes, grouped by author.\notelist
+%   Creates a hyperlinked list of all notes, grouped by author. It's
+%   wrapped in an unnumbered section/chapter, which is added to the table
+%   of contents. The starred version outputs just the list, without a
+%   new section.
 % \end{function}
-% \begin{function}{\todolist}
+% \begin{function}{\todolist,\todolist*}
 %   \begin{syntax}
 %       \tn{todolist}
+%       \tn{todolist*}
 %   \end{syntax}
 %   Creates a hyperlinked list of all to-dos, grouped by author. All completed to-dos
 %   are greyed out, and the hyperlink points to the place where the to-do would have been.
-%   \todolist
 % \end{function}
+% 
+% \notelist\todolist
 % 
 %
 %
@@ -441,14 +447,20 @@ If you're using MiKTeX, open MiKTeX console, go to
 % \end{macro}\begin{macro}{\notelist}
 % Displays a list of all notes, grouped by author.
 %    \begin{macrocode}
-\NewDocumentCommand{\notelist}{}{
+\NewDocumentCommand{\notelist}{ s }{
+    \IfBooleanF{#1}{
+        \@@_list_section:n {List~of~notes}
+    }
     \@@_display_list:N \@@_prop_comment_list
 }
 %    \end{macrocode}
 % \end{macro}\begin{macro}{\todolist}
 % Displays a list of all to-dos, grouped by author.
 %    \begin{macrocode}
-\NewDocumentCommand{\todolist}{}{
+\NewDocumentCommand{\todolist}{ s }{
+    \IfBooleanF{#1}{
+        \@@_list_section:n {List~of~to-dos}
+    }
     \@@_display_list:N \@@_prop_todo_list
 }
 %    \end{macrocode}
@@ -512,9 +524,8 @@ If you're using MiKTeX, open MiKTeX console, go to
         \prop_map_inline:Nn #1 {
             \tl_set:Nn \l_tmpa_tl {##2}
             \tl_if_empty:NF \l_tmpa_tl {
-                \par
                 {
-                    \Large
+                    \large
                     \color{\@@_get_author_colour:n {##1}}
                     ##1:
                 }
@@ -523,6 +534,22 @@ If you're using MiKTeX, open MiKTeX console, go to
                 \end{itemize}
             }
         }
+    }
+}
+%    \end{macrocode}
+% \end{macro}\begin{macro}{\@@_list_section:n}
+% Creates an unnumbered top-level section and puts it in the table
+% of contents.
+%    \begin{macrocode}
+\cs_new:Nn \@@_list_section:n {
+    \@@_check_if_final:n {
+        \ifcsname chapter\endcsname
+            \chapter*{#1}
+            \addcontentsline{toc}{chapter}{#1}
+        \else
+            \section*{#1}
+            \addcontentsline{toc}{section}{#1}
+        \fi
     }
 }
 %    \end{macrocode}

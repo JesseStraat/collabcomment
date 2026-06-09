@@ -103,7 +103,7 @@ License: [LPPL1.3c](https://www.latex-project.org/lppl.txt)
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: collabcomment 2026/06/04 v1.0}
+\Msg{* Package: collabcomment 2026/06/09 v1.0}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -229,7 +229,7 @@ If you're using MiKTeX, open MiKTeX console, go to
 %
 % \tableofcontents
 %
-% \changes{v1.0}{2026/06/04}{First release}
+% \changes{v1.0}{2026/06/09}{First release}
 %
 %
 %
@@ -352,7 +352,7 @@ If you're using MiKTeX, open MiKTeX console, go to
 %    \begin{macrocode}
 %<*main>
 %<@@=collabcomment>
-\ProvidesPackage{collabcomment}[2026/06/04 v1.0 Collaborative comments]
+\ProvidesPackage{collabcomment}[2026/06/09 v1.0 Collaborative comments]
 \RequirePackage{xcolor}
 \RequirePackage{xparse,l3keys2e}
 \ExplSyntaxOn
@@ -413,10 +413,15 @@ If you're using MiKTeX, open MiKTeX console, go to
             }
         }
     }
-    \@@_prop_add_to:Nnn \@@_prop_todo_list {#2} {
-        \IfBooleanT{#1}{\color{lightgray}}
-        #4
-    }
+    \@@_prop_add_to:Nnnn \@@_prop_todo_list {#2}
+%    \end{macrocode}
+% While \pkg{hyperref} is fully compatible with putting colours inside
+% hyperlinks, \pkg{ocgx2}'s |ocgcolorlinks| will override it with the
+% default link colour. To fix this, we need to reset the |linkcolor| in
+% a pre-hook to actually adding the new entry.
+%    \begin{macrocode}
+        {\IfBooleanT{#1}{\hypersetup{linkcolor=.}\color{lightgray}}}
+        {#4}
 }
 %    \end{macrocode}
 % \end{macro}\begin{macro}{\createauthor}
@@ -493,13 +498,17 @@ If you're using MiKTeX, open MiKTeX console, go to
     }
 }
 %    \end{macrocode}
-% \end{macro}\begin{macro}{\@@_prop_add_to:Nnn}
+% \end{macro}\begin{macro}{\@@_prop_add_to:Nnnn,\@@_prop_add_to:Nnn}
 % Adds a comment to one of the comment lists, grouped by author.
 %    \begin{macrocode}
-\cs_new:Nn \@@_prop_add_to:Nnn {
+\cs_new:Nn \@@_prop_add_to:Nnnn {
     \tl_set:Ne \l_tmpa_tl {\prop_item:Nn #1 {#2}}
     \tl_put_right:Nn \l_tmpa_tl {\item}
     \tl_put_right:Ne \l_tmpa_tl {[\thecollabcomment.]}
+%    \end{macrocode}
+% The following is an optional hook.
+%    \begin{macrocode}
+    \tl_put_right:Nn \l_tmpa_tl {#3}
 %    \end{macrocode}
 % If we're in math mode, we should add |\(...\)| around the comment.
 %    \begin{macrocode}
@@ -511,9 +520,15 @@ If you're using MiKTeX, open MiKTeX console, go to
     \@@_href_put_right:Nn \l_tmpa_tl {
         collabcomment:\thecollabcomment
     }
-    \tl_put_right:Nn \l_tmpa_tl { {#3} }
+    \tl_put_right:Nn \l_tmpa_tl { {#4} }
     \ifmmode \tl_put_right:Nn \l_tmpa_tl {\)}\fi
     \prop_gput:NnV #1 {#2} \l_tmpa_tl
+}
+%    \end{macrocode}
+% We also define a simplified version without the hook.
+%    \begin{macrocode}
+\cs_new:Nn \@@_prop_add_to:Nnn {
+    \@@_prop_add_to:Nnnn #1 {#2} {} {#3}
 }
 %    \end{macrocode}
 % \end{macro}\begin{macro}{\@@_display_list:N}

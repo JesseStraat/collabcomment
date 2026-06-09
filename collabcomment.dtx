@@ -413,15 +413,17 @@ If you're using MiKTeX, open MiKTeX console, go to
             }
         }
     }
-    \@@_prop_add_to:Nnnn \@@_prop_todo_list {#2}
+    \@@_prop_add_to:Nnnnn \@@_prop_todo_list {#2}
+        {#4}
 %    \end{macrocode}
 % While \pkg{hyperref} is fully compatible with putting colours inside
 % hyperlinks, \pkg{ocgx2}'s |ocgcolorlinks| will override it with the
 % default link colour. To fix this, we need to reset the |linkcolor| in
-% a pre-hook to actually adding the new entry.
+% a hook to actually adding the new entry.
 %    \begin{macrocode}
-        {\IfBooleanT{#1}{\hypersetup{linkcolor=.}\color{lightgray}}}
-        {#4}
+        {\group_begin:
+        \IfBooleanT{#1}{\hypersetup{linkcolor=.}\color{lightgray}}}
+        {\group_end:}
 }
 %    \end{macrocode}
 % \end{macro}\begin{macro}{\createauthor}
@@ -498,17 +500,17 @@ If you're using MiKTeX, open MiKTeX console, go to
     }
 }
 %    \end{macrocode}
-% \end{macro}\begin{macro}{\@@_prop_add_to:Nnnn,\@@_prop_add_to:Nnn}
+% \end{macro}\begin{macro}{\@@_prop_add_to:Nnnnn,\@@_prop_add_to:Nnn}
 % Adds a comment to one of the comment lists, grouped by author.
 %    \begin{macrocode}
-\cs_new:Nn \@@_prop_add_to:Nnnn {
+\cs_new:Nn \@@_prop_add_to:Nnnnn {
     \tl_set:Ne \l_tmpa_tl {\prop_item:Nn #1 {#2}}
     \tl_put_right:Nn \l_tmpa_tl {\item}
     \tl_put_right:Ne \l_tmpa_tl {[\thecollabcomment.]}
 %    \end{macrocode}
 % The following is an optional hook.
 %    \begin{macrocode}
-    \tl_put_right:Nn \l_tmpa_tl {#3}
+    \tl_put_right:Nn \l_tmpa_tl {#4}
 %    \end{macrocode}
 % If we're in math mode, we should add |\(...\)| around the comment.
 %    \begin{macrocode}
@@ -520,15 +522,16 @@ If you're using MiKTeX, open MiKTeX console, go to
     \@@_href_put_right:Nn \l_tmpa_tl {
         collabcomment:\thecollabcomment
     }
-    \tl_put_right:Nn \l_tmpa_tl { {#4} }
+    \tl_put_right:Nn \l_tmpa_tl { {#3} }
     \ifmmode \tl_put_right:Nn \l_tmpa_tl {\)}\fi
+    \tl_put_right:Nn \l_tmpa_tl {#5}
     \prop_gput:NnV #1 {#2} \l_tmpa_tl
 }
 %    \end{macrocode}
 % We also define a simplified version without the hook.
 %    \begin{macrocode}
 \cs_new:Nn \@@_prop_add_to:Nnn {
-    \@@_prop_add_to:Nnnn #1 {#2} {} {#3}
+    \@@_prop_add_to:Nnnnn #1 {#2} {#3} {} {}
 }
 %    \end{macrocode}
 % \end{macro}\begin{macro}{\@@_display_list:N}
